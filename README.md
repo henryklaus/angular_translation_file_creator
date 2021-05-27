@@ -11,20 +11,24 @@ NGX-Translate is an internationalization library for Angular. It lets you define
 Foreach language you create an own json-file (e.g. en-US.json). The json-file includes for each translation an translation-identifier followed by the translation text.
 
 en-US.json:
+```JSON
     {
       "user": "user",
       "password": "password",
       "login": "login",
       "loginFailed": "Login failed! Please retry."
     }
+```
 
 In your html-Code it looks for example like:
 login.component.html:
+```HTML
     <label for="username">{{ 'user' | translate }}</label>
     <input type="text" id="username" name="username">
     <label for="password">{{ 'password' | translate }}</label>
     <input type="text" id="password" name="password">
     <button type="button" (click)="login()">{{ 'login' | translate }}</button>
+```
 
 There are many tutorials for angular internationalization with ngx-translate
 
@@ -37,27 +41,41 @@ That the angular_translation_file_creator can detect your translation identifier
 
 In your html-Code it looks for example like:
 login.component.html:
+```HTML
     <label for="username">{{ '##user' | translate }}</label>
     <input type="text" id="username" name="username">
     <label for="password">{{ '##password' | translate }}</label>
     <input type="text" id="password" name="password">
     <button type="button" (click)="login()">{{ '##login' | translate }}</button>
+```
     
 login.component.ts:
+```TypeScript
     [..]
     loginFailed(): void {
       console.error(translateService.translate('##loginFailed'));
     }
     [..]
+```
 
 After starting the "NgxTranslationCreator.exe" you have some configurations:
-__Search-Directory__: Select the directory, where the scan should start. The scan includes automatically all subfolders.
-__Target-Directory__: Select the output-directory for the translation json-files. The directory should exists.
-__Update File - not overwrite__: if checked, the app would not delete translations from the existing translation json-file. Please uncheck this only, if no file exists.
-__Delete translations, that not inside code founded__: if checked, the app removes all translations form existings translation json-file, their identifier couln't find in your project code. All removed Translations would be exported in new a file "[filename]_remaining_[timestamp].log.json"
+```
+*__Search-Directory__*: Select the directory, where the scan should start. The scan includes automatically all subfolders.
+
+*__Target-Directory__*: Select the output-directory for the translation json-files. The directory should exists.
+
+*__Update File - not overwrite__*: if checked, the app would not delete translations from the existing translation json-file.
+Please uncheck this only, if no file exists.
+
+*__Delete translations, that not inside code founded__*: if checked, the app removes all translations form existings
+translation json-file, their identifier couln't find in your project code. All removed Translations would be exported
+in new a file "[filename]_remaining_[timestamp].log.json"
+```
 
 You have some more configuration at the "NgxTranslationCreator.exe.config". Open it with an Editor (e.g. notepad++, VS Code).
+
 NgxTranslationCreator.exe.config:
+```XML
     <configuration>
       [..]
       <appSettings>
@@ -83,4 +101,22 @@ NgxTranslationCreator.exe.config:
       </appSettings>
       [..]
     </configuration>
+```
+
+# Hints
+
+ * new translate-identifiers are added with the default value "placeholder"
+
+ * A translate-identifier, that occurs multiple in different files, only added once for the first file occurence. The other occurences are added on their file group with the identifier followed by the file-identifier. The value of these is "double-placeholder":
+    ```JSON
+        {
+            "##start##login.component.ts": "##login.component.ts",
+            "##loginFailed": "login failed. Please retry",
+            "##end##login.component.ts": "##login.component.ts",
+
+            "##start##login.component.html": "login.component.html",
+            "##loginFailed##login.component.html": "double-placeholder",
+            "##end##login.component.html": "login.component.html",
+        }
+    ```
 
